@@ -1,10 +1,21 @@
 import { func } from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Todos = () => {
 	const [inputValue, setInputValue] = useState("Type There");
 	const [inputList, setInputList] = useState([]);
-
+	useEffect(() => {
+		fetch(
+			"https://assets.breatheco.de/apis/fake/todos/user/pandapandapanda"
+		)
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(response.statusText);
+				}
+				return response.json();
+			})
+			.then(data => setInputList(data));
+	}, []);
 	function addItem(e) {
 		if (e.keyCode === 13) {
 			e.preventDefault();
@@ -40,9 +51,9 @@ const Todos = () => {
 			/>
 			<div>
 				<ul>
-					{inputList.map((todos, i) => (
-						<li key={todos}>
-							{todos}
+					{inputList.map((todo, i) => (
+						<li key={todo.label}>
+							{todo.label}
 							<button onClick={() => deleteItem(i)}>X</button>
 						</li>
 					))}
